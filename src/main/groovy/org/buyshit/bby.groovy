@@ -30,9 +30,6 @@ class bby {
 
     service.start()
 
-    /*driver = new RemoteWebDriver(service.getUrl(),
-      DesiredCapabilities.chrome())*/
-
     driver = new ChromeDriver(service, options)
 
     driver.get('https://www.bestbuy.com/site/super-smash-bros-ultimate-special-edition-nintendo-switch/6255361.p?skuId=6255361')
@@ -40,7 +37,7 @@ class bby {
     WebElement addToCartButton = driver.findElement(By.cssSelector('.add-to-cart-button button'))
 
     if (addToCartButton.isEnabled()) {
-      println('buy the shit naow!')
+      println('buy naow!')
 
       addToCartButton.click()
 
@@ -54,7 +51,7 @@ class bby {
 
       payment.click()
     } else {
-      println("shit's outta stock!")
+      println("outta stock!")
     }
 
     driver.quit()
