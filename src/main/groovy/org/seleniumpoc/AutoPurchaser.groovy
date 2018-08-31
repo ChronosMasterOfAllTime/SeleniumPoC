@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait
 
 class AutoPurchaser {
 
-  private static final REQUIRED_ARGS = ['URI', 'Username', 'Password']
+  private static final REQUIRED_ARGS = ['URI', 'Login_URI', 'Username', 'Password']
 
   private static ChromeDriverService service
 
@@ -22,6 +22,7 @@ class AutoPurchaser {
 
   private static def argsMap = [
     uri: '',
+    login_uri: '',
     username: '',
     password: '',
   ]
@@ -42,9 +43,7 @@ class AutoPurchaser {
     }
 
     initialize()
-
-
-
+    login()
     attemptToPurchase()
 
     driver.quit()
@@ -68,6 +67,17 @@ class AutoPurchaser {
 
     driver = new ChromeDriver(service, options)
     wait = new WebDriverWait(driver, 10)
+  }
+
+  private static void login() {
+    driver.get(argsMap.login_uri)
+    populateField(CssSelectors.USERNAME_FIELD.get(), argsMap.username)
+    populateField(CssSelectors.PASSWORD_FIELD.get(), argsMap.password)
+    clickOnElement(CssSelectors.LOGIN_SUBMIT.get())
+  }
+
+  private static void populateField(String selector, String data) {
+    driver.findElement(By.cssSelector(selector)).sendKeys(data)
   }
 
   private static void attemptToPurchase() {

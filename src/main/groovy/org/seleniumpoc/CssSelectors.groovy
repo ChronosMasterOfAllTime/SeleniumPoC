@@ -2,6 +2,9 @@ package org.seleniumpoc
 
 enum CssSelectors {
 
+  USERNAME_FIELD('#fld-e'),
+  PASSWORD_FIELD('#fld-p1'),
+  LOGIN_SUBMIT('.js-submit-button'),
   ADD_TO_CART('.add-to-cart-button button'),
   CART_COUNT('.count-container .count'),
   GO_TO_CART('.cart-link'),
