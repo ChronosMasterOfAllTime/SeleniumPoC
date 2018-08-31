@@ -75,36 +75,28 @@ class bby {
           driver.findElement(By.cssSelector('.cart-link')).click()
         }
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector('input#availability-radio-1')))
+        clickOnElement(wait, driver, 'input#availability-radio-1')
+        clickOnElement(wait, driver,'.listing-header__button button')
+        clickOnElement(wait, driver, '.button--continue button.btn-secondary')
+        clickOnElement(wait, driver, '.button--place-order button.btn-primary')
 
-        WebElement shippingRadioButton = driver.findElement(By.cssSelector('input#availability-radio-1'))
-
-        shippingRadioButton.click()
-
-        WebElement checkOutButton = driver.findElement(By.cssSelector('.listing-header__button button'))
-
-        checkOutButton.click()
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector('.button--continue button.btn-secondary')))
-
-        WebElement payment = driver.findElement(By.cssSelector('.button--continue button.btn-secondary'))
-
-        payment.click()
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector('.button--place-order button.btn-primary')))
-
-        WebElement placeOrder = driver.findElement(By.cssSelector('.button--place-order button.btn-primary'))
-
-        placeOrder.click()
       } else {
         buyWhenEnabled(addToCartButton, driver, wait)
       }
     } else {
       println("Outta stock!")
-      Thread.sleep(3000)
+      Thread.sleep(7000)
       println('Refreshing...')
       driver.navigate().refresh()
       attemptToPurchase(driver)
     }
+  }
+
+  private static void clickOnElement(WebDriverWait wait, ChromeDriver driver, String cssSelector) {
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssSelector)))
+
+    WebElement shippingRadioButton = driver.findElement(By.cssSelector(cssSelector))
+
+    shippingRadioButton.click()
   }
 }
