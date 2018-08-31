@@ -41,7 +41,7 @@ class bby {
   }
 
   private static void attemptToPurchase(ChromeDriver driver) {
-    WebDriverWait wait = new WebDriverWait(driver, 5)
+    WebDriverWait wait = new WebDriverWait(driver, 10)
     WebElement addToCartButton = getCartButton(driver, wait)
 
     buyWhenEnabled(addToCartButton, driver, wait)
