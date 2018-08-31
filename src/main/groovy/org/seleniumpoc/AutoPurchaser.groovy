@@ -43,7 +43,7 @@ class AutoPurchaser {
 
     initialize()
 
-    driver.get(argsMap.uri)
+
 
     attemptToPurchase()
 
@@ -71,9 +71,8 @@ class AutoPurchaser {
   }
 
   private static void attemptToPurchase() {
-    WebElement addToCartButton = getCartButton()
-
-    buyWhenEnabled(addToCartButton)
+    driver.get(argsMap.uri)
+    buyWhenEnabled()
   }
 
   private static WebElement getCartButton() {
@@ -84,7 +83,8 @@ class AutoPurchaser {
     addToCartButton
   }
 
-  private static void buyWhenEnabled(WebElement addToCartButton) {
+  private static void buyWhenEnabled() {
+    WebElement addToCartButton = getCartButton()
     if (addToCartButton.isEnabled()) {
       println('Buying naow!')
 
@@ -108,7 +108,7 @@ class AutoPurchaser {
         clickOnElement(CssSelectors.PLACE_ORDER_BUTTON.get())
 
       } else {
-        buyWhenEnabled(addToCartButton)
+        buyWhenEnabled()
       }
     } else {
       println("Outta stock!")
