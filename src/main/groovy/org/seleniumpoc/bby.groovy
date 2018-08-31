@@ -61,9 +61,9 @@ class bby {
 
       addToCartButton.click()
 
-      WebElement cartLoaded = driver.findElement(By.cssSelector('.count-container .count'))
+      List<WebElement> cartLoaded = driver.findElements(By.cssSelector('.count-container .count'))
 
-      if (cartLoaded.text.toInteger() > 0) {
+      if (cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0) {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector('.go-to-cart.v-fw-medium')))
 
@@ -85,7 +85,7 @@ class bby {
       }
     } else {
       println("Outta stock!")
-      Thread.sleep(7000)
+      Thread.sleep(15000)
       println('Refreshing...')
       driver.navigate().refresh()
       attemptToPurchase(driver)
