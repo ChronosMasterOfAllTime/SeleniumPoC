@@ -2,6 +2,7 @@ package org.seleniumpoc
 
 import groovyjarjarcommonscli.MissingArgumentException
 import org.openqa.selenium.By
+import org.openqa.selenium.PageLoadStrategy
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
@@ -55,8 +56,8 @@ class AutoPurchaser {
     def chromeDriverPath = classloader.getResource('chromedriver.exe').path
 
     ChromeOptions options = new ChromeOptions()
-
-    // options.addArguments('--headless')
+    options.pageLoadStrategy = PageLoadStrategy.NONE
+    options.headless = true
 
     service = new ChromeDriverService.Builder()
       .usingDriverExecutable(new File(chromeDriverPath))
@@ -77,6 +78,7 @@ class AutoPurchaser {
   }
 
   private static void populateField(String selector, String data) {
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)))
     driver.findElement(By.cssSelector(selector)).sendKeys(data)
   }
 
@@ -100,6 +102,7 @@ class AutoPurchaser {
 
       addToCartButton.click()
 
+      wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(CssSelectors.CART_COUNT.get())))
       List<WebElement> cartLoaded = driver.findElements(By.cssSelector(CssSelectors.CART_COUNT.get()))
 
       if (cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0) {
