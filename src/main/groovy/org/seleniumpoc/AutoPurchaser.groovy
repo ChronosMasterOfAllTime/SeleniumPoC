@@ -107,7 +107,8 @@ class AutoPurchaser {
   private static void attemptToPurchase() {
     Thread.sleep(1000)
     driver.get(argsMap.uri)
-    buyWhenEnabled()
+    Thread.sleep(1000)
+    checkIfCartLoaded()
   }
 
   private static WebElement getCartButton() {
@@ -125,32 +126,36 @@ class AutoPurchaser {
 
       addToCartButton.click()
 
-      wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(CssSelectors.CART_COUNT.get())))
-      List<WebElement> cartLoaded = driver.findElements(By.cssSelector(CssSelectors.CART_COUNT.get()))
 
-      Thread.sleep(1000)
-      if (cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0) {
-
-        List<WebElement> geekSquadPopup = driver.findElements(By.cssSelector(CssSelectors.GO_TO_CART_GS_POPUP.get()))
-
-        if (geekSquadPopup.size() > 0 && geekSquadPopup.get(0).displayed) {
-          geekSquadPopup.get(0).click()
-        } else {
-          driver.findElement(By.cssSelector(CssSelectors.GO_TO_CART.get())).click()
-        }
-
-        // clickOnElement(CssSelectors.SHIPPING_RADIO_BUTTON.get())
-        attemptCheckout()
-
-      } else {
-        buyWhenEnabled()
-      }
     } else {
       println("Outta stock!")
-      Thread.sleep(15000)
+      Thread.sleep(30000)
       println('Refreshing...')
       driver.navigate().refresh()
       attemptToPurchase()
+    }
+  }
+
+  private static void checkIfCartLoaded() {
+    // wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(CssSelectors.CART_COUNT.get())))
+    List<WebElement> cartLoaded = driver.findElements(By.cssSelector(CssSelectors.CART_COUNT.get()))
+
+    Thread.sleep(1000)
+    if (cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0) {
+
+      List<WebElement> geekSquadPopup = driver.findElements(By.cssSelector(CssSelectors.GO_TO_CART_GS_POPUP.get()))
+
+      if (geekSquadPopup.size() > 0 && geekSquadPopup.get(0).displayed) {
+        geekSquadPopup.get(0).click()
+      } else {
+        driver.findElement(By.cssSelector(CssSelectors.GO_TO_CART.get())).click()
+      }
+
+      // clickOnElement(CssSelectors.SHIPPING_RADIO_BUTTON.get())
+      attemptCheckout()
+
+    } else {
+      buyWhenEnabled()
     }
   }
 
