@@ -12,9 +12,20 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+  main {
+    groovy {
+      srcDirs = ['src/main/groovy']
+    }
+    resources {
+      srcDirs = ['src/main/resources']
+    }
+  }
+}
+
 dependencies {
     compile(
-      'org.codehaus.groovy:groovy-all:2.3.11',
+      'org.codehaus.groovy:groovy-all:2.5.2',
       'org.seleniumhq.selenium:selenium-java:3.14.0',
       'org.seleniumhq.selenium:selenium-chrome-driver:3.14.0'
     )

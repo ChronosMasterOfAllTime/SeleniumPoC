@@ -12,7 +12,8 @@ enum CssSelectors {
   SHIPPING_RADIO_BUTTON('input#availability-radio-1'),
   CHECKOUT_BUTTON('.listing-header__button button'),
   PAYMENT_BUTTON('.button--continue button.btn-secondary'),
-  PLACE_ORDER_BUTTON('.button--place-order button.btn-primary')
+  PLACE_ORDER_BUTTON('.button--place-order button.btn-primary'),
+  ALERT_BANNER('.c-alert.c-alert-level-danger')
 
   private String cssSelector
 
