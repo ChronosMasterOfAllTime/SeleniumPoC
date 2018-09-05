@@ -13,7 +13,7 @@ enum CssSelectors {
   CHECKOUT_BUTTON('.listing-header__button button'),
   PAYMENT_BUTTON('.button--continue button.btn-secondary'),
   PLACE_ORDER_BUTTON('.button--place-order button.btn-primary'),
-  ALERT_BANNER('.c-alert.c-alert-level-danger')
+  ALERT_BANNER('.c-alert .c-alert-icon')
 
   private String cssSelector
 
