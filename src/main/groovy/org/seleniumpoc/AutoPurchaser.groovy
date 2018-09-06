@@ -125,10 +125,11 @@ class AutoPurchaser {
       println('Buying naow!')
 
       addToCartButton.click()
+      Thread.sleep(1000)
 
-
+      checkIfCartLoaded()
     } else {
-      println("Outta stock!")
+      println("Outta stock! Rechecking in 30s")
       Thread.sleep(30000)
       println('Refreshing...')
       driver.navigate().refresh()
