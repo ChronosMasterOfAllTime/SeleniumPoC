@@ -23,6 +23,8 @@ class AutoPurchaser {
 
   private static WebDriverWait wait
 
+  private static Boolean initalCartCheck = true
+
   private static def argsMap = [
     uri: '',
     login_uri: '',
@@ -108,7 +110,14 @@ class AutoPurchaser {
     Thread.sleep(1000)
     driver.get(argsMap.uri)
     Thread.sleep(1000)
-    checkIfCartLoaded()
+
+    if (isCartLoaded()) {
+      goToCart()
+      attemptCheckout()
+    } else {
+      initalCartCheck = false
+      buyWhenEnabled()
+    }
   }
 
   private static WebElement getCartButton() {
@@ -121,59 +130,75 @@ class AutoPurchaser {
 
   private static void buyWhenEnabled() {
     WebElement addToCartButton = getCartButton()
-    if (addToCartButton.isEnabled()) {
-      println('Buying naow!')
 
-      addToCartButton.click()
-      Thread.sleep(1000)
-
-      checkIfCartLoaded()
-    } else {
+    while (!addToCartButton.isEnabled()) {
       println("Outta stock! Rechecking in 30s")
       Thread.sleep(30000)
       println('Refreshing...')
       driver.navigate().refresh()
-      attemptToPurchase()
+      addToCartButton = getCartButton()
     }
+
+    println('Buying naow!')
+
+    while (!isCartLoaded()) {
+      addToCartButton.click()
+      Thread.sleep(1000)
+    }
+
+    goToCart()
+    attemptCheckout()
   }
 
-  private static void checkIfCartLoaded() {
-    // wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(CssSelectors.CART_COUNT.get())))
+  private static Boolean isCartLoaded() {
     List<WebElement> cartLoaded = driver.findElements(By.cssSelector(CssSelectors.CART_COUNT.get()))
 
-    Thread.sleep(1000)
-    if (cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0) {
+    Boolean isCartLoaded = cartLoaded.size() > 0 && cartLoaded.get(0).text.toInteger() > 0
 
-      List<WebElement> geekSquadPopup = driver.findElements(By.cssSelector(CssSelectors.GO_TO_CART_GS_POPUP.get()))
+    if (!isCartLoaded && !initalCartCheck) {
+      println('Add to cart failed, reattempting in 30s...')
+      Thread.sleep(30000)
+    }
 
-      if (geekSquadPopup.size() > 0 && geekSquadPopup.get(0).displayed) {
-        geekSquadPopup.get(0).click()
-      } else {
-        driver.findElement(By.cssSelector(CssSelectors.GO_TO_CART.get())).click()
-      }
+    isCartLoaded
+  }
 
-      // clickOnElement(CssSelectors.SHIPPING_RADIO_BUTTON.get())
-      attemptCheckout()
+  private static void goToCart() {
+    List<WebElement> geekSquadPopup = driver.findElements(By.cssSelector(CssSelectors.GO_TO_CART_GS_POPUP.get()))
 
+    if (geekSquadPopup.size() > 0 && geekSquadPopup.get(0).displayed) {
+      geekSquadPopup.get(0).click()
     } else {
-      buyWhenEnabled()
+      driver.findElement(By.cssSelector(CssSelectors.GO_TO_CART.get())).click()
+    }
+
+    Thread.sleep(2000)
+    if (driver.findElements(By.cssSelector(CssSelectors.SHIPPING_RADIO_BUTTON.get())).size() > 0) {
+      clickOnElement(CssSelectors.SHIPPING_RADIO_BUTTON.get())
     }
   }
 
   private static void attemptCheckout() {
-    clickOnElement(CssSelectors.CHECKOUT_BUTTON.get())
-    Thread.sleep(1000)
-    if (driver.findElements(By.cssSelector(CssSelectors.ALERT_BANNER.get())).empty) {
-      println('Check it out naow!')
+    Boolean isAlertVisible = true
+
+    while (isAlertVisible) {
+      clickOnElement(CssSelectors.CHECKOUT_BUTTON.get())
       Thread.sleep(1500)
-      clickOnElement(CssSelectors.PAYMENT_BUTTON.get())
-      Thread.sleep(1500)
-      clickOnElement(CssSelectors.PLACE_ORDER_BUTTON.get())
-    } else {
-      println('Checkout Failed, reattempting in 30s')
-      Thread.sleep(30000)
-      attemptCheckout()
+
+      isAlertVisible = !driver.findElements(By.cssSelector(CssSelectors.ALERT_BANNER.get())).empty
+
+      if (isAlertVisible) {
+        println('Checkout Failed, reattempting in 30s')
+        Thread.sleep(30000)
+      }
     }
+
+    println('Check it out naow!')
+    Thread.sleep(3000)
+    clickOnElement(CssSelectors.PAYMENT_BUTTON.get())
+    Thread.sleep(7500)
+    clickOnElement(CssSelectors.PLACE_ORDER_BUTTON.get())
+    Thread.sleep(15000)
   }
 
   private static void clickOnElement(String cssSelector) {
