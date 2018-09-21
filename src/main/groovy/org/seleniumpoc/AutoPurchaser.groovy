@@ -92,10 +92,12 @@ class AutoPurchaser {
     driverPath
   }
 
-  private static void login() {
-    driver.get(argsMap.login_uri)
-    populateField(CssSelectors.USERNAME_FIELD.get(), argsMap.username)
-    Thread.sleep(100)
+  private static void login(Boolean populateUser = true) {
+    if (populateUser) {
+      driver.get(argsMap.login_uri)
+      populateField(CssSelectors.USERNAME_FIELD.get(), argsMap.username)
+      Thread.sleep(100)
+    }
     populateField(CssSelectors.PASSWORD_FIELD.get(), argsMap.password)
     Thread.sleep(100)
     clickOnElement(CssSelectors.LOGIN_SUBMIT.get())
@@ -183,13 +185,14 @@ class AutoPurchaser {
 
     while (isAlertVisible) {
       clickOnElement(CssSelectors.CHECKOUT_BUTTON.get())
-      Thread.sleep(1500)
+      Thread.sleep(2500)
 
       isAlertVisible = !driver.findElements(By.cssSelector(CssSelectors.ALERT_BANNER.get())).empty
 
       if (isAlertVisible) {
         println('Checkout Failed, reattempting in 30s')
         Thread.sleep(30000)
+        checkIfSessionEnded() ? login(false) : println('Still logged in! Phew!')
       }
     }
 
@@ -199,6 +202,10 @@ class AutoPurchaser {
     Thread.sleep(7500)
     clickOnElement(CssSelectors.PLACE_ORDER_BUTTON.get())
     Thread.sleep(15000)
+  }
+
+  private static Boolean checkIfSessionEnded() {
+    !driver.findElements(By.cssSelector(CssSelectors.USERNAME_FIELD.get())).empty
   }
 
   private static void clickOnElement(String cssSelector) {
