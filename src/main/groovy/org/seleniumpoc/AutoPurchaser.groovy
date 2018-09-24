@@ -96,10 +96,10 @@ class AutoPurchaser {
     if (populateUser) {
       driver.get(argsMap.login_uri)
       populateField(CssSelectors.USERNAME_FIELD.get(), argsMap.username)
-      Thread.sleep(100)
+      Thread.sleep(150)
     }
     populateField(CssSelectors.PASSWORD_FIELD.get(), argsMap.password)
-    Thread.sleep(100)
+    Thread.sleep(150)
     clickOnElement(CssSelectors.LOGIN_SUBMIT.get())
   }
 
